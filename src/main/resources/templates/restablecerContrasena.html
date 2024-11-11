@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer Contraseña</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        .reset-container {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            color: #333;
+            text-align: center;
+        }
+        .reset-container h3 {
+            font-weight: 700;
+            color: #4e4376;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        .btn-custom {
+            background-color: #ffaa00;
+            border: none;
+            font-weight: bold;
+            color: #fff;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .btn-custom:hover {
+            background-color: #e69900;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 0.9rem;
+            padding: 10px;
+            margin-bottom: 1rem;
+        }
+        .alert {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="reset-container">
+    <h3>Restablecer Contraseña</h3>
+    <form th:action="@{/restablecerContrasena}" method="post">
+        <input type="hidden" th:value="${token}" name="token">
+        <div class="form-group">
+            <label for="nuevaContrasena">Nueva Contraseña:</label>
+            <input id="nuevaContrasena" type="password" class="form-control" name="nuevaContrasena" required placeholder="Ingrese nueva contraseña">
+        </div>
+        <div class="form-group">
+            <label for="confirmarContrasena">Confirmar Contraseña:</label>
+            <input id="confirmarContrasena" type="password" class="form-control" name="confirmarContrasena" required placeholder="Confirme su contraseña">
+        </div>
+        <button type="submit" class="btn btn-custom">Restablecer Contraseña</button>
+    </form>
+    <div th:if="${mensaje}" class="alert alert-success" role="alert" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
