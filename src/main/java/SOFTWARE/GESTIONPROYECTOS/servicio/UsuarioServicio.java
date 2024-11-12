@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface UsuarioServicio extends UserDetailsService {
+    public interface UsuarioServicio extends UserDetailsService {
 
     Optional<Usuario> findByEmail(String email);
 
@@ -37,4 +37,5 @@ public interface UsuarioServicio extends UserDetailsService {
     void actualizarUsuario(Long id, Usuario usuarioActualizado, String nombreRol);
 
     void eliminarUsuario(Long id);
+
 }

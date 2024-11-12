@@ -25,5 +25,8 @@ public class RoleInitializer {
         if (rolRepositorio.findByNombre("ROLE_EMPLEADO") == null) {
             rolRepositorio.save(new Rol("ROLE_EMPLEADO"));
         }
+        if (rolRepositorio.findByNombre("ROLE_USUARIO") == null) {
+                rolRepositorio.save(new Rol("ROLE_USUARIO"));
+            }
     }
 }

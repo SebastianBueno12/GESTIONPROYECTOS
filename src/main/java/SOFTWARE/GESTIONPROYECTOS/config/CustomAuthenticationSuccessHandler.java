@@ -28,6 +28,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             }else if (authority.getAuthority().equals("ROLE_EMPLEADO")) {
                 response.sendRedirect("/empleado/panel");  // Redirigir al panel de mesero
                 return;
+            }else if (authority.getAuthority().equals("ROLE_USUARIO")) {
+                response.sendRedirect("/usuario/panel");  // Redirigir al panel de mesero
+                return;
             }
         }
 

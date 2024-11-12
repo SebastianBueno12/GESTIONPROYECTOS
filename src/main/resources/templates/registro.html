@@ -70,24 +70,51 @@
             </div>
             <!-- Mensaje de error si el correo ya existe -->
             <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
+            <!-- Campo para Documento -->
+            <div class="form-group">
+                <label for="documento">Documento:</label>
+                <input id="documento" type="text" class="form-control" th:field="*{documento}" required placeholder="Ingrese su documento">
+            </div>
+
+            <!-- Campo para Nombre -->
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <input id="nombre" type="text" class="form-control" th:field="*{nombre}" required placeholder="Ingrese su nombre">
             </div>
+
+            <!-- Campo para Apellido -->
             <div class="form-group">
                 <label for="apellido">Apellido:</label>
                 <input id="apellido" type="text" class="form-control" th:field="*{apellido}" required placeholder="Ingrese su apellido">
             </div>
+
+            <!-- Campo para Dirección -->
+            <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <input id="direccion" type="text" class="form-control" th:field="*{direccion}" required placeholder="Ingrese su dirección">
+            </div>
+
+            <!-- Campo para Teléfono -->
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input id="telefono" type="text" class="form-control" th:field="*{telefono}" required placeholder="Ingrese su teléfono">
+            </div>
+
+            <!-- Campo para Email -->
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input id="email" type="email" class="form-control" th:field="*{email}" required placeholder="Ingrese su correo">
             </div>
+
+            <!-- Campo para Password -->
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input id="password" type="password" class="form-control" th:field="*{password}" required placeholder="Ingrese su contraseña">
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+        </div>
     </form>
     <div class="form-group mt-3">
         <span>¿Ya tienes cuenta? <a th:href="@{/login}" class="text-secondary">Inicia sesión aquí</a></span>

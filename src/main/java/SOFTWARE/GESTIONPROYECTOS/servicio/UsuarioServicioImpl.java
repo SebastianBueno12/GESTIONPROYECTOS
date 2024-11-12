@@ -68,9 +68,13 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     @Override
     public void actualizarUsuario(Long id, Usuario usuarioActualizado) {
         Usuario usuario = obtenerUsuarioPorId(id);
+
+        usuario.setDocumento(usuarioActualizado.getDocumento());
         usuario.setNombre(usuarioActualizado.getNombre());
         usuario.setApellido(usuarioActualizado.getApellido());
         usuario.setEmail(usuarioActualizado.getEmail());
+        usuario.setDireccion(usuarioActualizado.getDireccion());
+        usuario.setTelefono(usuarioActualizado.getTelefono());
         usuario.setPassword(passwordEncoder.encode(usuarioActualizado.getPassword()));
         usuarioRepositorio.save(usuario);
     }
@@ -78,19 +82,18 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     @Override
     public Usuario guardar(UsuarioRegistroDTO registroDTO) {
         Usuario usuario = new Usuario();
+        usuario.setDocumento(registroDTO.getDocumento());
         usuario.setNombre(registroDTO.getNombre());
         usuario.setApellido(registroDTO.getApellido());
+        usuario.setDireccion(registroDTO.getDireccion());
+        usuario.setTelefono(registroDTO.getTelefono());
         usuario.setEmail(registroDTO.getEmail());
         usuario.setPassword(passwordEncoder.encode(registroDTO.getPassword()));
 
-        // Asignación del rol por defecto (puedes cambiar esto si necesitas otro rol)
-        Rol rol = rolRepositorio.findByNombre("ROLE_EMPLEADO");
-        if (rol == null) {
-            throw new IllegalArgumentException("Rol no encontrado");
-        }
+        Rol rol = rolRepositorio.findByNombre("ROLE_USUARIO");
         usuario.setRoles(new HashSet<>(Collections.singletonList(rol)));
 
-        return usuarioRepositorio.save(usuario); // Guardar el usuario en la base de datos
+        return usuarioRepositorio.save(usuario);
     }
 
     @Override
@@ -98,12 +101,14 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     public void guardarUsuarioConRol(Usuario usuario, String nombreRol) {
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
+        // Asignar el rol
         Rol rol = rolRepositorio.findByNombre(nombreRol);
         if (rol == null) {
             throw new IllegalArgumentException("Rol no encontrado");
         }
-
         usuario.setRoles(new HashSet<>(Collections.singletonList(rol)));
+
+        // Guardar el usuario con todos sus campos
         usuarioRepositorio.save(usuario);
     }
 
@@ -113,8 +118,11 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         Usuario usuarioExistente = obtenerUsuarioPorId(id);
 
         // Actualizar los campos del usuario
+        usuarioExistente.setDocumento(usuarioActualizado.getDocumento());
         usuarioExistente.setNombre(usuarioActualizado.getNombre());
         usuarioExistente.setApellido(usuarioActualizado.getApellido());
+        usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
+        usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
         usuarioExistente.setEmail(usuarioActualizado.getEmail());
         // Buscar y asignar el nuevo rol
         Rol nuevoRol = rolRepositorio.findByNombre(nombreRol);

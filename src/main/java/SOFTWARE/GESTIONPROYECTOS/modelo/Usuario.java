@@ -2,6 +2,7 @@ package SOFTWARE.GESTIONPROYECTOS.modelo;
 
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -11,6 +12,8 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "documento", unique = true)
+    private String documento;
 
     @Column(name = "nombre")
     private String nombre;
@@ -18,11 +21,20 @@ public class Usuario {
     @Column(name = "apellido")
     private String apellido;
 
+    @Column(name = "direccion")
+    private String direccion;
+
+    @Column(name = "telefono")
+    private String telefono;
+
     @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "fecha_contratacion")
+    private Date fechaContratacion;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -40,21 +52,33 @@ public class Usuario {
     // Constructor vacío
     public Usuario() {}
 
-    public Usuario(String nombre, String apellido, String email, String password ) {
+    public Usuario(String documento, String nombre, String apellido, String direccion, String telefono, String email, String password ) {
+        this.documento = documento;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.direccion = direccion;
+        this.telefono = telefono;
         this.email = email;
         this.password = password;
 
     }
 
     // Getters y Setters
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
     }
 
     public String getNombre() {
@@ -73,6 +97,22 @@ public class Usuario {
         this.apellido = apellido;
     }
 
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -89,6 +129,13 @@ public class Usuario {
         this.password = password;
     }
 
+    public Date getFechaContratacion() {
+        return fechaContratacion;
+    }
+
+    public void setFechaContratacion(Date fechaContratacion) {
+        this.fechaContratacion = fechaContratacion;
+    }
 
     public Set<Rol> getRoles() {
         return roles;
@@ -97,11 +144,12 @@ public class Usuario {
     public void setRoles(Set<Rol> roles) {
         this.roles = roles;
     }
+
     public String getTokenRestablecimiento() {
         return tokenRestablecimiento;
     }
 
     public void setTokenRestablecimiento(String tokenRestablecimiento) {
         this.tokenRestablecimiento = tokenRestablecimiento;
-    }
+        }
 }

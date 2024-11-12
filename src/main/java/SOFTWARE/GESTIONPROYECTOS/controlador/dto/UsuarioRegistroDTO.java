@@ -6,13 +6,16 @@ public class UsuarioRegistroDTO {
     private String apellido;
     private String email;
     private String password;
-    private Integer edad;
-    private String rol;  // Añadimos el rol
+    private String rol;
+    private String documento;
+    private String direccion;
+    private String telefono;
 
     // Constructor vacío
     public UsuarioRegistroDTO() {}
 
-    // Getters y setters
+    // Getters y Setters
+
     public String getNombre() {
         return nombre;
     }
@@ -45,13 +48,6 @@ public class UsuarioRegistroDTO {
         this.password = password;
     }
 
-    public Integer getEdad() {
-        return edad;
-    }
-
-    public void setEdad(Integer edad) {
-        this.edad = edad;
-    }
 
     public String getRol() {
         return rol;
@@ -59,5 +55,29 @@ public class UsuarioRegistroDTO {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 }
