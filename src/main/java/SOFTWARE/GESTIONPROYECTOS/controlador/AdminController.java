@@ -72,7 +72,7 @@ public class AdminController {
         return "redirect:/admin/usuarios?eliminado";  // Redirigir después de eliminar
     }
 
-    @GetMapping("/usuarios/contratar/{id}")
+    @GetMapping ("/usuarios/contratar/{id}")
     public String contratarUsuario(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Usuario usuario = usuarioServicio.obtenerUsuarioPorId(id);
 
@@ -82,19 +82,40 @@ public class AdminController {
             return "redirect:/admin/usuarios";
         }
 
-        usuario.setFechaContratacion(new Date());  // Asigna la fecha actual como fecha de contratación
+        // Solo actualiza la fecha de contratación y el rol
+        usuario.setFechaContratacion(new Date());
 
-        // Cambia el rol a EMPLEADO
         Rol rolEmpleado = rolServicio.listarRoles().stream()
                 .filter(rol -> "ROLE_EMPLEADO".equals(rol.getNombre()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Rol EMPLEADO no encontrado"));
-        Set<Rol> roles = new HashSet<>();
-        roles.add(rolEmpleado);
-        usuario.setRoles(roles);
+        usuario.getRoles().clear();
+        usuario.getRoles().add(rolEmpleado);
 
-        usuarioServicio.actualizarUsuario(id, usuario);
+        // Guardar cambios sin tocar otros campos
+        usuarioServicio.actualizarUsuarioSinCambiarPassword(usuario);
+
         redirectAttributes.addFlashAttribute("success", "Usuario contratado exitosamente.");
         return "redirect:/admin/usuarios";
     }
+    // Mostrar formulario de registro de usuario
+    @GetMapping("/usuarios/nuevo")
+    public String mostrarFormularioRegistro(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "registroUsuario";
+    }
+    @PostMapping("/usuarios/registrar")
+    public String registrarUsuario(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
+        try {
+            usuarioServicio.guardarUsuario(usuario);
+            redirectAttributes.addFlashAttribute("success", "Usuario registrado exitosamente.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/admin/usuarios/nuevo"; // Redirigir al formulario de registro en caso de error
+        }
+        return "redirect:/admin/usuarios";
+    }
+
+
+
 }

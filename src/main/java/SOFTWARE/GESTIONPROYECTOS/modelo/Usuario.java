@@ -1,8 +1,8 @@
 package SOFTWARE.GESTIONPROYECTOS.modelo;
 
-
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -12,6 +12,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "documento", unique = true)
     private String documento;
 
@@ -36,8 +37,7 @@ public class Usuario {
     @Column(name = "fecha_contratacion")
     private Date fechaContratacion;
 
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "usuarios_roles",
             joinColumns = @JoinColumn(name = "usuario_id"),
@@ -48,11 +48,13 @@ public class Usuario {
     @Column(name = "token_restablecimiento")
     private String tokenRestablecimiento;
 
+    @OneToMany(mappedBy = "coordinador", orphanRemoval = false)
+    private Set<Proyecto> proyectosAsignados = new HashSet<>();
 
     // Constructor vacío
     public Usuario() {}
 
-    public Usuario(String documento, String nombre, String apellido, String direccion, String telefono, String email, String password ) {
+    public Usuario(String documento, String nombre, String apellido, String direccion, String telefono, String email, String password) {
         this.documento = documento;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -60,7 +62,6 @@ public class Usuario {
         this.telefono = telefono;
         this.email = email;
         this.password = password;
-
     }
 
     // Getters y Setters
@@ -151,5 +152,13 @@ public class Usuario {
 
     public void setTokenRestablecimiento(String tokenRestablecimiento) {
         this.tokenRestablecimiento = tokenRestablecimiento;
-        }
+    }
+
+    public Set<Proyecto> getProyectosAsignados() {
+        return proyectosAsignados;
+    }
+
+    public void setProyectosAsignados(Set<Proyecto> proyectosAsignados) {
+        this.proyectosAsignados = proyectosAsignados;
+    }
 }

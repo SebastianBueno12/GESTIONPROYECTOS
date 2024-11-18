@@ -61,7 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .csrf()
-                .ignoringAntMatchers("/admin/projects/new");
+                .ignoringAntMatchers("/admin/projects/new","/admin/usuarios/registrar");
     }
 
     @Bean

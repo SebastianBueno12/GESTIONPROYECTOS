@@ -3,6 +3,7 @@ package SOFTWARE.GESTIONPROYECTOS.servicio;
 import SOFTWARE.GESTIONPROYECTOS.controlador.dto.UsuarioRegistroDTO;
 import SOFTWARE.GESTIONPROYECTOS.modelo.Rol;
 import SOFTWARE.GESTIONPROYECTOS.modelo.Usuario;
+import SOFTWARE.GESTIONPROYECTOS.repositorio.ProyectoRepositorio;
 import SOFTWARE.GESTIONPROYECTOS.repositorio.RolRepositorio;
 import SOFTWARE.GESTIONPROYECTOS.repositorio.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.stream.Collectors;
 import java.util.*;
 
 @Service
@@ -20,6 +22,9 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
+
+    @Autowired
+    private ProyectoRepositorio proyectoRepositorio;
 
     @Autowired
     private RolRepositorio rolRepositorio;
@@ -111,6 +116,13 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         // Guardar el usuario con todos sus campos
         usuarioRepositorio.save(usuario);
     }
+    @Override
+    public Usuario guardarUsuario(Usuario usuario) {
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        Rol rol = rolRepositorio.findByNombre("ROLE_USUARIO");
+        usuario.setRoles(new HashSet<>(Collections.singletonList(rol)));
+        return usuarioRepositorio.save(usuario);
+    }
 
     @Override
     @Transactional
@@ -140,10 +152,34 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     }
 
     @Override
+    @Transactional
     public void eliminarUsuario(Long id) {
-        usuarioRepositorio.deleteById(id);
+        Usuario usuario = usuarioRepositorio.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        boolean esCoordinador = usuario.getRoles().stream()
+                .anyMatch(rol -> "ROLE_COORDINADOR".equals(rol.getNombre()));
+
+        if (esCoordinador) {
+            if (usuario.getProyectosAsignados() != null && !usuario.getProyectosAsignados().isEmpty()) {
+                usuario.getProyectosAsignados().forEach(proyecto -> {
+                    proyecto.setCoordinador(null);
+                    proyectoRepositorio.save(proyecto);
+                });
+            }
+        }
+
+        usuarioRepositorio.delete(usuario);
     }
 
+    @Override
+    public List<Usuario> listarCoordinadoresDisponibles() {
+        return usuarioRepositorio.findAll().stream()
+                .filter(usuario -> usuario.getRoles().stream()
+                        .anyMatch(rol -> "ROLE_COORDINADOR".equals(rol.getNombre()))
+                        && usuario.getProyectosAsignados().isEmpty())
+                .collect(Collectors.toList());
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepositorio.findByEmail(username)
@@ -157,5 +193,22 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         }
 
         return new User(usuario.getEmail(), usuario.getPassword(), grantedAuthorities);
+    }
+    @Override
+    public void actualizarUsuarioSinCambiarPassword(Usuario usuarioActualizado) {
+        Usuario usuarioExistente = obtenerUsuarioPorId(usuarioActualizado.getId());
+
+        // Solo actualiza los campos necesarios
+        usuarioExistente.setDocumento(usuarioActualizado.getDocumento());
+        usuarioExistente.setNombre(usuarioActualizado.getNombre());
+        usuarioExistente.setApellido(usuarioActualizado.getApellido());
+        usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
+        usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
+        usuarioExistente.setEmail(usuarioActualizado.getEmail());
+        usuarioExistente.setFechaContratacion(usuarioActualizado.getFechaContratacion());
+        usuarioExistente.setRoles(usuarioActualizado.getRoles());
+
+        // No actualiza la contraseña
+        usuarioRepositorio.save(usuarioExistente);
     }
 }

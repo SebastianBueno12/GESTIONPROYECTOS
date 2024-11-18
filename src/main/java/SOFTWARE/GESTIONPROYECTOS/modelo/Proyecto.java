@@ -30,6 +30,10 @@ public class Proyecto {
     @Column(name = "estado", nullable = false)
     private String estado;
 
+    @ManyToOne
+    @JoinColumn(name = "coordinador_id", nullable = true)
+    private Usuario coordinador;
+
     // Getters y setters
 
     public Long getId() {
@@ -78,5 +82,13 @@ public class Proyecto {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public Usuario getCoordinador() {
+        return coordinador;
+    }
+
+    public void setCoordinador(Usuario coordinador) {
+        this.coordinador = coordinador;
     }
 }

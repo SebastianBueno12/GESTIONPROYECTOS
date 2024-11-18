@@ -24,12 +24,12 @@ import java.util.Optional;
 
     long contarUsuarios();
 
-    Usuario obtenerUsuarioPorId(Long id);
-
     void actualizarUsuario(Long id, Usuario usuarioActualizado);
 
     @Transactional
     Usuario guardar(UsuarioRegistroDTO registroDTO);
+
+    Usuario guardarUsuario(Usuario usuario);
 
     @Transactional
     void guardarUsuarioConRol(Usuario usuario, String nombreRol);
@@ -38,4 +38,9 @@ import java.util.Optional;
 
     void eliminarUsuario(Long id);
 
-}
+    List<Usuario> listarCoordinadoresDisponibles();
+
+    Usuario obtenerUsuarioPorId(Long id);
+
+        void actualizarUsuarioSinCambiarPassword(Usuario usuarioActualizado);
+    }

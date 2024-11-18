@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,5 +31,8 @@ public class ProyectoServicioImpl implements ProyectoServicio {
         return proyectoRepositorio.findAll(pageable);
     }
 
-    // Implementa otros métodos según los necesites
+    @Override
+    public List<Proyecto> obtenerProyectosPorCoordinador(Long coordinadorId) {
+        return proyectoRepositorio.findByCoordinadorId(coordinadorId);
+    }
 }
