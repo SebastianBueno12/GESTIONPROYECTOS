@@ -1,5 +1,6 @@
 package SOFTWARE.GESTIONPROYECTOS.controlador;
 
+import SOFTWARE.GESTIONPROYECTOS.modelo.EstadoProyecto;
 import SOFTWARE.GESTIONPROYECTOS.modelo.Proyecto;
 import SOFTWARE.GESTIONPROYECTOS.modelo.Usuario;
 import SOFTWARE.GESTIONPROYECTOS.servicio.ProyectoServicio;
@@ -11,11 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class    ProyectoController {
+public class  ProyectoController {
 
     @Autowired
     private ProyectoServicio proyectoServicio;
@@ -37,10 +37,11 @@ public class    ProyectoController {
 
     @GetMapping("/admin/projects")
     public String listarProyectos(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<Proyecto> proyectos = proyectoServicio.listarProyectos(PageRequest.of(page, 10)); // 10 proyectos por página
+        Page<Proyecto> proyectos = proyectoServicio.listarProyectos(PageRequest.of(page, 3));
         model.addAttribute("proyectos", proyectos);
         return "listaProyectos";
     }
+
 
     @GetMapping("/admin/projects/updateStatus")
     public String mostrarFormularioActualizarEstado(@RequestParam("id") Long id, Model model) {
@@ -52,15 +53,24 @@ public class    ProyectoController {
         model.addAttribute("error", "Proyecto no encontrado");
         return "redirect:/admin/projects";
     }
-
     @PostMapping("/admin/projects/updateStatus")
     public String actualizarEstado(@RequestParam("id") Long id, @RequestParam("estado") String estado) {
-        Optional<Proyecto> proyecto = proyectoServicio.obtenerProyectoPorId(id);
-        if (proyecto.isPresent()) {
-            Proyecto proyectoActualizado = proyecto.get();
-            proyectoActualizado.setEstado(estado);
-            proyectoServicio.guardarProyecto(proyectoActualizado);
+        Optional<Proyecto> proyectoOpt = proyectoServicio.obtenerProyectoPorId(id);
+
+        if (proyectoOpt.isPresent()) {
+            Proyecto proyectoActualizado = proyectoOpt.get();
+
+            try {
+                proyectoActualizado.setEstado(EstadoProyecto.valueOf(estado)); // Conversión de String a enum
+                proyectoServicio.guardarProyecto(proyectoActualizado);
+            } catch (IllegalArgumentException e) {
+                // Manejar error si el estado no es válido
+                return "redirect:/admin/projects?error=EstadoInvalido";
+            }
+        } else {
+            return "redirect:/admin/projects?error=ProyectoNoEncontrado";
         }
+
         return "redirect:/admin/projects";
     }
 
@@ -91,5 +101,7 @@ public class    ProyectoController {
         return "redirect:/admin/projects";
 
     }
+
+
 
 }

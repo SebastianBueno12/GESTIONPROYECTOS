@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tareas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            margin-top: 3rem;
+        }
+        h2 {
+            color: #4e4376;
+        }
+        .btn-custom {
+            background-color: #ffaa00;
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .btn-custom:hover {
+            background-color: #e69900;
+        }
+        .filter-bar {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tareas del Proyecto</h2>
+    <div class="filter-bar">
+        <form th:action="@{/coordinador/tareas}" method="get" class="d-flex">
+            <input type="text" name="filtro" placeholder="Buscar tareas por descripción" class="form-control me-2" th:value="${filtro}">
+            <button type="submit" class="btn btn-custom">Buscar</button>
+        </form>
+    </div>
+
+    <a th:href="@{/coordinador/tareas/nueva/{proyectoId}(proyectoId=${proyectoId})}" class="btn btn-custom mb-3">Añadir Nueva Tarea</a>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Descripción</th>
+            <th>Empleado</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tarea : ${tareas}">
+            <td th:text="${tarea.descripcion}">Descripción</td>
+            <td th:text="${tarea.empleado != null ? tarea.empleado.nombre : 'No Asignado'}">Empleado</td>
+            <td th:text="${tarea.fechaInicio}">Fecha Inicio</td>
+            <td th:text="${tarea.fechaFin}">Fecha Fin</td>
+            <td th:text="${tarea.estado}">Estado</td>
+            <td>
+                <form th:action="@{'/coordinador/tareas/' + ${proyecto.id} + '/estado/' + ${tarea.id} + '/PENDIENTE'}" method="post">
+                    <button type="submit" class="btn btn-warning btn-sm">Pendiente</button>
+                </form>
+                <form th:action="@{'/coordinador/tareas/' + ${proyecto.id} + '/estado/' + ${tarea.id} + '/EN_PROGRESO'}" method="post">
+                    <button type="submit" class="btn btn-primary btn-sm">En Progreso</button>
+                </form>
+                <form th:action="@{'/coordinador/tareas/' + ${proyecto.id} + '/estado/' + ${tarea.id} + '/COMPLETADA'}" method="post">
+                    <button type="submit" class="btn btn-success btn-sm">Completada</button>
+                </form>
+                <form th:action="@{'/coordinador/tareas/' + ${proyecto.id} + '/eliminar/' + ${tarea.id} }" method="post">
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+            </td>
+
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="mb-4">
+        <label>Progreso del Proyecto:</label>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar"
+                 th:style="'width: ' + ${progreso} + '%'"
+                 th:text="${progreso + '% completado'}"></div>
+        </div>
+        <p th:if="${progreso == 100}" class="text-success">Estado del Proyecto: FINALIZADO</p>
+    </div>
+
+
+    <a th:href="@{/coordinador/panel}" class="btn btn-primary mt-3">Volver al Panel</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

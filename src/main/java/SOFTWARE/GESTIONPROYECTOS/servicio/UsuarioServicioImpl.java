@@ -181,6 +181,14 @@ public class UsuarioServicioImpl implements UsuarioServicio {
                 .collect(Collectors.toList());
     }
     @Override
+    public List<Usuario> listarEmpleados() {
+        return usuarioRepositorio.findAll().stream()
+                .filter(usuario -> usuario.getRoles().stream()
+                        .anyMatch(rol -> rol.getNombre().equals("ROLE_EMPLEADO")))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepositorio.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario o contraseña inválidos"));

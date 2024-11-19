@@ -3,7 +3,11 @@ package SOFTWARE.GESTIONPROYECTOS.modelo;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "proyectos")
@@ -13,9 +17,11 @@ public class Proyecto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El nombre clave no puede estar vacío")
     @Column(name = "nombre_clave", nullable = false)
     private String nombreClave;
 
+    @NotBlank(message = "La denominación comercial no puede estar vacía")
     @Column(name = "denominacion_comercial", nullable = false)
     private String denominacionComercial;
 
@@ -27,15 +33,18 @@ public class Proyecto {
     @Column(name = "fecha_fin", nullable = false)
     private LocalDate fechaFin;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
-    private String estado;
+    private EstadoProyecto estado;
 
     @ManyToOne
     @JoinColumn(name = "coordinador_id", nullable = true)
     private Usuario coordinador;
 
-    // Getters y setters
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tarea> tareas = new ArrayList<>();
 
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -76,11 +85,11 @@ public class Proyecto {
         this.fechaFin = fechaFin;
     }
 
-    public String getEstado() {
+    public EstadoProyecto getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoProyecto estado) {
         this.estado = estado;
     }
 
@@ -90,5 +99,43 @@ public class Proyecto {
 
     public void setCoordinador(Usuario coordinador) {
         this.coordinador = coordinador;
+    }
+
+    public List<Tarea> getTareas() {
+        return tareas;
+    }
+
+    public void setTareas(List<Tarea> tareas) {
+        this.tareas = tareas;
+    }
+
+    // Métodos personalizados
+
+    /**
+     * Calcula el progreso del proyecto basado en las tareas completadas.
+     * @return Porcentaje de progreso (0 a 100)
+     */
+    public int calcularProgreso() {
+        if (tareas == null || tareas.isEmpty()) {
+            return 0; // Sin tareas, el progreso es 0%
+        }
+
+        long tareasCompletadas = tareas.stream()
+                .filter(t -> t.getEstado() == EstadoTarea.COMPLETADA)
+                .count();
+
+        return (int) ((double) tareasCompletadas / tareas.size() * 100);
+    }
+
+
+    /**
+     * Actualiza el estado del proyecto según el progreso.
+     * Si todas las tareas están completadas, el estado pasa a "FINALIZADO".
+     */
+    public void actualizarEstado() {
+        if (tareas != null && !tareas.isEmpty() &&
+                tareas.stream().allMatch(t -> t.getEstado() == EstadoTarea.COMPLETADA)) {
+            this.estado = EstadoProyecto.FINALIZADO;
+        }
     }
 }

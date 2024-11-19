@@ -42,5 +42,7 @@ import java.util.Optional;
 
     Usuario obtenerUsuarioPorId(Long id);
 
+        List<Usuario> listarEmpleados();
+
         void actualizarUsuarioSinCambiarPassword(Usuario usuarioActualizado);
     }

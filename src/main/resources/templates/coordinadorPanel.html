@@ -22,6 +22,15 @@
         h2 {
             color: #4e4376;
         }
+        .btn-custom {
+            background-color: #ffaa00;
+            border: none;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-custom:hover {
+            background-color: #e69900;
+        }
     </style>
 </head>
 <body>
@@ -37,18 +46,23 @@
             <th>Fecha de Inicio</th>
             <th>Fecha de Finalización</th>
             <th>Estado</th>
+            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="proyecto : ${proyectos}">
-            <td th:text="${proyecto.nombreClave}">Nombre en Clave</td>
+            <td th:text="${proyecto.nombreClave}">Nombre Clave</td>
             <td th:text="${proyecto.denominacionComercial}">Denominación Comercial</td>
-            <td th:text="${proyecto.fechaInicio}">Fecha de Inicio</td>
-            <td th:text="${proyecto.fechaFin}">Fecha de Finalización</td>
+            <td th:text="${proyecto.fechaInicio}">Fecha Inicio</td>
+            <td th:text="${proyecto.fechaFin}">Fecha Fin</td>
             <td th:text="${proyecto.estado}">Estado</td>
+            <td>
+                <a th:href="@{/coordinador/tareas/{proyectoId}(proyectoId=${proyecto.id})}" class="btn btn-warning">Gestionar Tareas</a>
+            </td>
         </tr>
         </tbody>
     </table>
+
 
     <a href="/logout" class="btn btn-danger mt-3">Cerrar Sesión</a>
 </div>

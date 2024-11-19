@@ -1,10 +1,14 @@
 package SOFTWARE.GESTIONPROYECTOS.controlador;
 
+import SOFTWARE.GESTIONPROYECTOS.modelo.Proyecto;
 import SOFTWARE.GESTIONPROYECTOS.modelo.Rol;
 import SOFTWARE.GESTIONPROYECTOS.modelo.Usuario;
+import SOFTWARE.GESTIONPROYECTOS.servicio.ProyectoServicio;
 import SOFTWARE.GESTIONPROYECTOS.servicio.RolServicio;
 import SOFTWARE.GESTIONPROYECTOS.servicio.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +29,9 @@ public class AdminController {
 
     @Autowired
     private RolServicio rolServicio;
+
+    @Autowired
+    private ProyectoServicio proyectoServicio;
 
     // Panel de administración
     @GetMapping("/panel")
@@ -115,7 +122,6 @@ public class AdminController {
         }
         return "redirect:/admin/usuarios";
     }
-
 
 
 }

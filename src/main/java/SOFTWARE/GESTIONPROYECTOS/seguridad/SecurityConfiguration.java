@@ -44,6 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/registro**", "/recuperarContrasena**", "/restablecerContrasena**", "/js/**", "/css/**", "/img/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/coordinador/**").hasRole("COORDINADOR")
+                .antMatchers("/coordinador/tareas/**").hasRole("COORDINADOR")
                 .antMatchers("/empleado/**").hasRole("EMPLEADO")
                 .antMatchers("/usuario/**").hasRole("USUARIO")
                 .anyRequest().authenticated()
@@ -61,7 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .csrf()
-                .ignoringAntMatchers("/admin/projects/new","/admin/usuarios/registrar");
+                .ignoringAntMatchers("/admin/projects/new","/admin/usuarios/registrar","/coordinador/tareas/**");
     }
 
     @Bean
